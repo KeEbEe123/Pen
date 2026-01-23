@@ -1,0 +1,118 @@
+1. Layout & Grid System
+The layout abandons the traditional "top-heavy" browser chrome in favor of a "Canvas & Tools" approach, maximizing vertical screen real estate for reading and writing.
+
+1.1 The Container Model (The "Floating Sheet")
+
+Detached Webviews: The web content does not bleed to the edges of the screen. Instead, the active webpage sits inside a container with significant padding (approx. 12px–16px) from the window edges.
+
+Visual Metaphor: The browser window is the "Desk," and the webpage is a "Sheet of Paper" resting on it.
+
+Corner Radii:
+
+Window Frame: Standard OS curvature.
+
+Web Content Container: Large rounded corners (20px–24px) to soften the transition between UI and content.
+
+1.2 The Sidebar Navigation
+
+Vertical Axis: All primary navigation (tabs, bookmarks, settings) lives in a collapsible vertical sidebar on the left.
+
+Width:
+
+Expanded: Fixed width (approx. 240px).
+
+Collapsed (Focus State): Icon-only strip (approx. 64px).
+
+Hierarchy: The sidebar uses whitespace rather than divider lines to separate sections (e.g., Pinned vs. Active Tabs).
+
+2. Visual Language
+2.1 Color System: "Academic Calm"
+
+The palette should reduce eye strain during long study sessions, favoring low-contrast backgrounds over stark whites or blacks.
+
+Surface Colors:
+
+Light Mode: Warm Off-White / Cream (reminiscent of book paper).
+
+Dark Mode: Deep Slate / Charcoal (reminiscent of a blackboard).
+
+UI Chrome: The sidebar and background should use a slightly darker/lighter shade than the content container to create depth.
+
+Accent Color: A single, muted primary color (e.g., Electric Blue or Sage Green) used only for active states (selected tab) and primary action buttons.
+
+2.2 Materiality & Depth
+
+Glassmorphism: Use background blur (backdrop-filter) for floating elements like command palettes or context menus to maintain context without obscuring the content underneath.
+
+Shadows:
+
+Ambient: Soft, diffuse shadows behind the Web Content Container to lift it off the background.
+
+Elevation: Zero-shadow for inactive sidebar elements; crisp shadow for active/hovered elements.
+
+3. Typography & Iconography
+3.1 Typography
+
+Typeface: A clean, geometric Sans-Serif (e.g., Inter, circular, or similar to the reference).
+
+Weights:
+
+Headers: Semi-Bold / Bold (for tab groups or dashboard headers).
+
+UI Text: Regular / Medium (for tab titles).
+
+Sizing: UI text should be slightly smaller (13px–14px) to allow content to take center stage, but with generous line height (140%) for legibility.
+
+3.2 Iconography
+
+Style: Minimalist line icons (1.5px stroke width).
+
+Shape: Rounded caps and joins to match the soft UI corners.
+
+State:
+
+Inactive: 50% opacity or grey scale.
+
+Active: 100% opacity, filled (optional), or tinted with the Accent Color.
+
+4. UI Components
+4.1 The "Omnibox" (Address/Search Bar)
+
+Placement: It is not fixed to the top or the sidebar. It is a floating element.
+
+Behavior: It appears centered or top-centered when summoned, floating above the web content, and disappears (or shrinks to a pill shape) when the user interacts with the page.
+
+Shape: Pill-shaped (fully rounded ends).
+
+4.2 Tab Design
+
+Visual Style: Tabs are not "folder tabs" but list items in the sidebar.
+
+Active State: Indicated by a soft background fill (rounded rect) and bold text.
+
+Hover State: Subtle change in background opacity.
+
+4.3 Contextual Overlays
+
+Tooltips & Menus: Should originate from the element they relate to.
+
+Borders: Subtle 1px borders with low opacity to define edges without harsh lines.
+
+5. Interaction & Motion Guidelines
+5.1 Transitions
+
+Speed: Snappy but smooth (approx. 200ms–300ms).
+
+Easing: Use "ease-out" for entering elements (menus appearing) and "ease-in" for exiting elements.
+
+Scale: When clicking a tab, the web container should subtly "scale in" (98% to 100%) to simulate a page being brought to the front.
+
+5.2 Micro-interactions
+
+Hover: UI elements should have a "magnetic" feel or a subtle lift (y-axis translation of -2px) to invite interaction.
+
+Feedback: Clicks should trigger a subtle scale-down (pressed) effect on buttons/icons.
+
+5.3 Focus States
+
+Dimming: When a user is typing in the "Omnibox," the rest of the interface (sidebar and web content) should dim significantly (30% opacity) to direct attention solely to the input.

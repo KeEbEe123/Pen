@@ -1,0 +1,112 @@
+📘 Product Requirements Document (PRD)
+Product Name
+ScholarLens
+Product Type
+Research-Centric Web Browser
+Domain
+Information Systems
+1. Overview
+ScholarLens is a desktop-based research-centric browser designed for researchers, students, journalists, and long-form writers. Unlike traditional browsers optimized for casual web usage, ScholarLens focuses on structured research, credible source management, and assisted academic writing. The product integrates reading, annotation, citation, claim verification, writing, and presentation tools into a single workflow-driven interface.
+2. Problem Statement
+Current browsers lack native support for academic research workflows. Users rely on multiple disconnected tools for reading, note-taking, citation management, writing, and verification, leading to inefficiency, poor source traceability, and increased risk of misinformation or plagiarism.
+3. Goals & Objectives
+Primary Goals
+Enable structured reading and annotation directly within the browser
+Simplify citation and reference management
+Assist in identifying and verifying factual claims
+Support ethical AI-assisted writing and presentation creation
+Success Metrics
+Reduction in external tools required per research task
+Time taken to convert sources into a structured draft
+Accuracy and completeness of generated citations
+4. Target Users
+Academic researchers
+College and university students
+Journalists
+Bloggers and content writers
+5. Key Features & Requirements
+5.1 Reading & Annotation
+Functional Requirements
+Distraction-free reading mode
+Text highlighting on webpages and PDFs
+Notes linked to highlights with source metadata
+Tagging and categorization of notes
+Non-Functional Requirements
+Fast rendering
+Offline access to saved notes
+5.2 Citation Management
+Functional Requirements
+One-click citation generation
+Support for APA, MLA, Chicago, and IEEE formats
+Central reference panel per project
+5.3 Versioned Bookmarks
+Functional Requirements
+Snapshot web pages at the time of bookmarking
+Detect and display content changes over time
+Highlight modified sections
+5.4 Claim Tracker (Core Differentiator)
+Functional Requirements
+Detect statistical data and factual claims
+Highlight claims within content
+Flag claims requiring citations
+Link supporting or related sources
+5.5 Writing Workspace
+Functional Requirements
+Integrated text editor
+Drag-and-drop notes into documents
+Grammar and style assistance
+Essay structure guidance
+Constraints
+No full automated essay generation
+Emphasis on user-authored content
+5.6 Presentation Support
+Functional Requirements
+Convert written content into slide-ready format
+Auto-generate citation slides
+Export to PPT-compatible format
+6. Project-Based Workflow
+Users create projects per topic
+Each project contains:
+Sources
+Notes
+Citations
+Drafts
+Presentations
+7. Technical Requirements
+Frontend
+React + TypeScript
+Rich text editor (TipTap / Slate)
+WebView-based browsing
+Desktop Framework
+Electron
+Backend (Optional)
+Node.js or Flask
+NLP for claim detection
+AI writing assistance APIs, Google GEMINI 2.5 flash
+Storage
+Local-first storage (SQLite / IndexedDB)
+Optional cloud sync
+8. Security & Privacy
+Local storage by default
+No automatic data sharing
+User-controlled AI interactions
+Clear indication of AI-assisted content
+9. Assumptions & Constraints
+Internet access required for live browsing
+AI features dependent on API availability
+Desktop-first experience
+10. Out of Scope (Phase 1)
+Mobile browser support
+Real-time collaboration
+Fully autonomous content generation
+11. Future Enhancements
+Collaborative research projects
+Peer review and feedback mode
+Advanced source credibility scoring
+Cloud sync and cross-device support
+12. Risks
+Complexity of claim detection accuracy
+Performance overhead from WebView rendering
+Dependency on external AI services
+13. Conclusion
+ScholarLens aims to redefine browser usage for research and writing by transforming fragmented online reading into a structured, credible, and efficient knowledge synthesis workflow.

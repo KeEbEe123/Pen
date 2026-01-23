@@ -1,0 +1,5 @@
+Electron
+React
+tailwind
+Node
+google GEMINI

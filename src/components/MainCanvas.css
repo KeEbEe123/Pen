@@ -10,6 +10,16 @@
   height: 100vh;
   padding: var(--spacing-lg);
   background: var(--color-surface-primary);
+  transition: transform var(--transition-normal);
+}
+
+/* Tab switching animation */
+.canvas-container.switching {
+  transform: scale(0.98);
+}
+
+.canvas-container.active {
+  transform: scale(1);
 }
 
 /* Empty Canvas */

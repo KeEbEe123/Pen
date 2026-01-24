@@ -158,6 +158,34 @@ ipcMain.handle('db:get-setting', async (event, key) => {
   }
 });
 
+// History operations
+ipcMain.handle('db:add-to-history', async (event, url, title) => {
+  try {
+    return database.addToHistory(url, title);
+  } catch (error) {
+    console.error('Error adding to history:', error);
+    throw error;
+  }
+});
+
+ipcMain.handle('db:get-history', async (event, limit) => {
+  try {
+    return database.getHistory(limit);
+  } catch (error) {
+    console.error('Error getting history:', error);
+    throw error;
+  }
+});
+
+ipcMain.handle('db:search-history', async (event, query, limit) => {
+  try {
+    return database.searchHistory(query, limit);
+  } catch (error) {
+    console.error('Error searching history:', error);
+    throw error;
+  }
+});
+
 // IPC handlers for Gemini API operations
 ipcMain.handle('gemini:initialize', async (event, apiKey) => {
   try {
@@ -211,6 +239,52 @@ ipcMain.handle('gemini:summarize-content', async (event, text, maxLength) => {
 
 ipcMain.handle('gemini:is-initialized', async () => {
   return geminiService.isInitialized();
+});
+
+// WebView-specific handlers
+ipcMain.handle('webview:capture-page', async (event, tabId) => {
+  try {
+    // This would capture the current page content for bookmarking
+    // Implementation depends on the specific webview instance
+    return { success: true, tabId };
+  } catch (error) {
+    console.error('Error capturing page:', error);
+    throw error;
+  }
+});
+
+ipcMain.handle('webview:extract-text', async (event, tabId) => {
+  try {
+    // This would extract text content from the webview for AI analysis
+    // Implementation depends on the specific webview instance
+    return { success: true, tabId };
+  } catch (error) {
+    console.error('Error extracting text:', error);
+    throw error;
+  }
+});
+
+ipcMain.handle('webview:inject-script', async (event, tabId, script) => {
+  try {
+    // This would inject JavaScript into the webview for research features
+    // Implementation depends on the specific webview instance
+    return { success: true, tabId };
+  } catch (error) {
+    console.error('Error injecting script:', error);
+    throw error;
+  }
+});
+
+// Text selection handlers
+ipcMain.handle('webview:text-selected', async (event, data) => {
+  try {
+    console.log('Text selected in webview:', data);
+    // Forward to renderer process
+    return { success: true, data };
+  } catch (error) {
+    console.error('Error handling text selection:', error);
+    throw error;
+  }
 });
 
 // In this file you can include the rest of your app's specific main process

@@ -113,6 +113,23 @@ class ScholarLensDB {
         updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
       )
     `);
+
+    // History table
+    this.db.exec(`
+      CREATE TABLE IF NOT EXISTS history (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        url TEXT NOT NULL,
+        title TEXT,
+        visit_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+        visit_count INTEGER DEFAULT 1
+      )
+    `);
+
+    // Create index for faster history queries
+    this.db.exec(`
+      CREATE INDEX IF NOT EXISTS idx_history_url ON history(url);
+      CREATE INDEX IF NOT EXISTS idx_history_time ON history(visit_time);
+    `);
   }
 
   // Project methods
@@ -228,6 +245,60 @@ class ScholarLensDB {
     const stmt = this.db.prepare('SELECT value FROM settings WHERE key = ?');
     const result = stmt.get(key);
     return result ? result.value : null;
+  }
+
+  // History methods
+  addToHistory(url, title = '') {
+    // Check if URL already exists in history
+    const existingStmt = this.db.prepare('SELECT id, visit_count FROM history WHERE url = ?');
+    const existing = existingStmt.get(url);
+    
+    if (existing) {
+      // Update existing entry
+      const updateStmt = this.db.prepare(`
+        UPDATE history 
+        SET title = ?, visit_time = CURRENT_TIMESTAMP, visit_count = visit_count + 1 
+        WHERE id = ?
+      `);
+      return updateStmt.run(title, existing.id);
+    } else {
+      // Create new entry
+      const insertStmt = this.db.prepare(`
+        INSERT INTO history (url, title) 
+        VALUES (?, ?)
+      `);
+      return insertStmt.run(url, title);
+    }
+  }
+
+  getHistory(limit = 100) {
+    const stmt = this.db.prepare(`
+      SELECT * FROM history 
+      ORDER BY visit_time DESC 
+      LIMIT ?
+    `);
+    return stmt.all(limit);
+  }
+
+  searchHistory(query, limit = 50) {
+    const stmt = this.db.prepare(`
+      SELECT * FROM history 
+      WHERE title LIKE ? OR url LIKE ? 
+      ORDER BY visit_count DESC, visit_time DESC 
+      LIMIT ?
+    `);
+    const searchTerm = `%${query}%`;
+    return stmt.all(searchTerm, searchTerm, limit);
+  }
+
+  deleteFromHistory(id) {
+    const stmt = this.db.prepare('DELETE FROM history WHERE id = ?');
+    return stmt.run(id);
+  }
+
+  clearHistory() {
+    const stmt = this.db.prepare('DELETE FROM history');
+    return stmt.run();
   }
 
   close() {

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Debug Test Page</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; line-height: 1.6; }
+        .highlight-test { background: yellow; padding: 2px; }
+    </style>
+</head>
+<body>
+    <h1>Debug Test Page</h1>
+    <p>This is a simple test page for debugging highlights.</p>
+    <p>Select this text to test highlighting: <strong>Important text to highlight</strong></p>
+    <p>Another paragraph with <em>different text to select</em> for testing.</p>
+    
+    <script>
+        console.log('Debug test page loaded');
+        
+        // Add some debug info
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded, page ready for testing');
+        });
+    </script>
+</body>
+</html>

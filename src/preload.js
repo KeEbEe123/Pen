@@ -18,7 +18,12 @@ contextBridge.exposeInMainWorld('electronAPI', {
       ipcRenderer.invoke('db:create-note', projectId, bookmarkId, content, highlightText, highlightPosition, tags),
     getNotes: (projectId, bookmarkId) => ipcRenderer.invoke('db:get-notes', projectId, bookmarkId),
     setSetting: (key, value) => ipcRenderer.invoke('db:set-setting', key, value),
-    getSetting: (key) => ipcRenderer.invoke('db:get-setting', key)
+    getSetting: (key) => ipcRenderer.invoke('db:get-setting', key),
+    
+    // History operations
+    addToHistory: (url, title) => ipcRenderer.invoke('db:add-to-history', url, title),
+    getHistory: (limit) => ipcRenderer.invoke('db:get-history', limit),
+    searchHistory: (query, limit) => ipcRenderer.invoke('db:search-history', query, limit)
   },
 
   // Gemini AI operations
@@ -30,5 +35,13 @@ contextBridge.exposeInMainWorld('electronAPI', {
     improveWriting: (text, context) => ipcRenderer.invoke('gemini:improve-writing', text, context),
     summarizeContent: (text, maxLength) => ipcRenderer.invoke('gemini:summarize-content', text, maxLength),
     isInitialized: () => ipcRenderer.invoke('gemini:is-initialized')
+  },
+
+  // WebView operations
+  webview: {
+    capturePage: (tabId) => ipcRenderer.invoke('webview:capture-page', tabId),
+    extractText: (tabId) => ipcRenderer.invoke('webview:extract-text', tabId),
+    injectScript: (tabId, script) => ipcRenderer.invoke('webview:inject-script', tabId, script),
+    textSelected: (data) => ipcRenderer.invoke('webview:text-selected', data)
   }
 });

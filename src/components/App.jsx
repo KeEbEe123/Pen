@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Sidebar from './Sidebar';
 import MainCanvas from './MainCanvas';
 import Omnibox from './Omnibox';
+import NotesPanel from './NotesPanel';
 import './App.css';
 
 const App = () => {
@@ -11,6 +12,7 @@ const App = () => {
   const [projects, setProjects] = useState([]);
   const [activeTab, setActiveTab] = useState(null);
   const [tabs, setTabs] = useState([]);
+  const [showNotesPanel, setShowNotesPanel] = useState(false);
 
   useEffect(() => {
     initializeApp();
@@ -51,12 +53,32 @@ const App = () => {
     setOmniboxVisible(false);
   };
 
+  const updateTab = (tabId, updates) => {
+    const updatedTabs = tabs.map(tab => 
+      tab.id === tabId ? { ...tab, ...updates } : tab
+    );
+    setTabs(updatedTabs);
+    
+    // Update active tab if it's the one being updated
+    if (activeTab && activeTab.id === tabId) {
+      setActiveTab({ ...activeTab, ...updates });
+    }
+
+    // Add to history when URL changes
+    if (updates.url && updates.title) {
+      window.electronAPI.database.addToHistory(updates.url, updates.title);
+    }
+  };
+
   const createNewTab = (url, title = 'New Tab') => {
+    console.log('createNewTab called with:', { url, title });
     const newTab = {
-      id: Date.now(),
+      id: `tab-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`, // More unique ID
       url,
       title,
-      isActive: true
+      isActive: true,
+      isLoading: false,
+      createdAt: Date.now()
     };
     
     // Deactivate other tabs
@@ -65,15 +87,23 @@ const App = () => {
     
     setTabs(updatedTabs);
     setActiveTab(newTab);
+    
+    console.log('Created new tab:', newTab);
   };
 
   const switchTab = (tabId) => {
+    console.log('Switching to tab:', tabId);
+    
     const updatedTabs = tabs.map(tab => ({
       ...tab,
       isActive: tab.id === tabId
     }));
     setTabs(updatedTabs);
-    setActiveTab(updatedTabs.find(tab => tab.id === tabId));
+    
+    const newActiveTab = updatedTabs.find(tab => tab.id === tabId);
+    setActiveTab(newActiveTab);
+    
+    console.log('Active tab set to:', newActiveTab);
   };
 
   const closeTab = (tabId) => {
@@ -84,6 +114,14 @@ const App = () => {
       const newActiveTab = updatedTabs.length > 0 ? updatedTabs[updatedTabs.length - 1] : null;
       setActiveTab(newActiveTab);
     }
+  };
+
+  const handleNavigateToUrl = (url) => {
+    console.log('handleNavigateToUrl called with:', url);
+    // Create a new tab or navigate existing tab to the URL
+    createNewTab(url);
+    setShowNotesPanel(false); // Close notes panel after navigation
+    console.log('Navigation completed, notes panel closed');
   };
 
   // Keyboard shortcuts
@@ -105,6 +143,12 @@ const App = () => {
       if (event.key === 'Escape' && omniboxVisible) {
         hideOmnibox();
       }
+      
+      // Cmd/Ctrl + Shift + N to show notes panel
+      if ((event.metaKey || event.ctrlKey) && event.shiftKey && event.key === 'N') {
+        event.preventDefault();
+        setShowNotesPanel(!showNotesPanel);
+      }
     };
 
     document.addEventListener('keydown', handleKeyDown);
@@ -124,12 +168,15 @@ const App = () => {
           onTabSwitch={switchTab}
           onTabClose={closeTab}
           onNewTab={createNewTab}
+          onShowNotes={() => setShowNotesPanel(true)}
         />
         
         <MainCanvas
           activeTab={activeTab}
           onShowOmnibox={showOmnibox}
           sidebarCollapsed={sidebarCollapsed}
+          onTabUpdate={updateTab}
+          currentProject={currentProject}
         />
         
         {omniboxVisible && (
@@ -138,6 +185,14 @@ const App = () => {
             onNavigate={createNewTab}
           />
         )}
+        
+        <NotesPanel
+          currentProject={currentProject}
+          activeTab={activeTab}
+          isVisible={showNotesPanel}
+          onClose={() => setShowNotesPanel(false)}
+          onNavigateToUrl={handleNavigateToUrl}
+        />
       </div>
     </div>
   );

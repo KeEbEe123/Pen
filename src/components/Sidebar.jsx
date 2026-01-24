@@ -10,7 +10,8 @@ const Sidebar = ({
   activeTab, 
   onTabSwitch, 
   onTabClose, 
-  onNewTab 
+  onNewTab,
+  onShowNotes
 }) => {
   const [activeSection, setActiveSection] = useState('tabs');
 
@@ -25,6 +26,23 @@ const Sidebar = ({
 
   const handleNewTab = () => {
     onNewTab('about:blank', 'New Tab');
+  };
+
+  const handleAddBookmark = async () => {
+    if (activeTab && currentProject) {
+      try {
+        await window.electronAPI.database.createBookmark(
+          currentProject.id,
+          activeTab.url,
+          activeTab.title || 'Untitled',
+          '', // content - could be extracted later
+          '' // snapshot HTML - could be captured later
+        );
+        console.log('Bookmark added successfully');
+      } catch (error) {
+        console.error('Error adding bookmark:', error);
+      }
+    }
   };
 
   return (
@@ -65,7 +83,10 @@ const Sidebar = ({
 
         <button 
           className={`nav-item ${activeSection === 'notes' ? 'active' : ''}`}
-          onClick={() => setActiveSection('notes')}
+          onClick={() => {
+            setActiveSection('notes');
+            onShowNotes?.();
+          }}
           title="Notes"
         >
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
@@ -133,10 +154,14 @@ const Sidebar = ({
                         onClick={() => handleTabClick(tab)}
                       >
                         <div className="tab-favicon">
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                            <circle cx="12" cy="12" r="10"/>
-                            <path d="M12 6v6l4 2"/>
-                          </svg>
+                          {tab.isLoading ? (
+                            <div className="tab-loading-spinner"></div>
+                          ) : (
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                              <circle cx="12" cy="12" r="10"/>
+                              <path d="M12 6v6l4 2"/>
+                            </svg>
+                          )}
                         </div>
                         <div className="tab-info">
                           <div className="tab-title">{tab.title}</div>
@@ -196,9 +221,26 @@ const Sidebar = ({
               <div className="bookmarks-section">
                 <div className="section-header">
                   <h3>Bookmarks</h3>
+                  <button 
+                    className="new-bookmark-btn" 
+                    onClick={handleAddBookmark}
+                    title="Bookmark current page"
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                      <line x1="12" y1="5" x2="12" y2="19"/>
+                      <line x1="5" y1="12" x2="19" y2="12"/>
+                    </svg>
+                  </button>
                 </div>
-                <div className="empty-state">
-                  <p>Bookmarks will appear here</p>
+                
+                <div className="bookmarks-list">
+                  {/* Bookmarks will be loaded from database */}
+                  <div className="empty-state">
+                    <p>No bookmarks yet</p>
+                    <button onClick={handleAddBookmark} className="create-bookmark-btn">
+                      Bookmark Current Page
+                    </button>
+                  </div>
                 </div>
               </div>
             )}

@@ -23,41 +23,41 @@
 - [x] Create icon system (minimalist line icons, 1.5px stroke)
 
 ### 1.3 WebView Integration
-- [ ] Implement Electron WebView for web content rendering
-- [ ] Create web content container with proper isolation
-- [ ] Handle navigation events and URL changes
-- [ ] Implement security policies for WebView
+- [x] Implement Electron WebView for web content rendering
+- [x] Create web content container with proper isolation
+- [x] Handle navigation events and URL changes
+- [x] Implement security policies for WebView
 
 ## Phase 2: Core Browsing Experience
 
 ### 2.1 Omnibox (Address/Search Bar)
-- [ ] Create floating, pill-shaped omnibox
-- [ ] Implement show/hide behavior (appears when summoned)
-- [ ] Add search and navigation functionality
-- [ ] Implement focus dimming (30% opacity for rest of interface)
+- [x] Create floating, pill-shaped omnibox
+- [x] Implement show/hide behavior (appears when summoned)
+- [x] Add search and navigation functionality
+- [x] Implement focus dimming (30% opacity for rest of interface)
 
 ### 2.2 Tab Management
-- [ ] Design sidebar-based tab system (list items, not folder tabs)
-- [ ] Implement active state styling (soft background fill)
-- [ ] Add hover states and transitions
-- [ ] Create tab switching with scale animation (98% to 100%)
-- [ ] Handle tab creation, closing, and reordering
+- [x] Design sidebar-based tab system (list items, not folder tabs)
+- [x] Implement active state styling (soft background fill)
+- [x] Add hover states and transitions
+- [x] Create tab switching with scale animation (98% to 100%)
+- [x] Handle tab creation, closing, and reordering
 
 ### 2.3 Navigation & History
-- [ ] Implement back/forward navigation
-- [ ] Create history management
-- [ ] Add bookmark functionality (basic)
+- [x] Implement back/forward navigation
+- [x] Create history management
+- [x] Add bookmark functionality (basic)
 
 ## Phase 3: Research-Specific Features
 
 ### 3.1 Reading & Annotation System
-- [ ] Implement distraction-free reading mode
-- [ ] Create text highlighting system for web pages
-- [ ] Build annotation overlay system
-- [ ] Design note creation and editing interface
-- [ ] Implement note-to-highlight linking with metadata
+- [x] Implement distraction-free reading mode
+- [x] Create text highlighting system for web pages
+- [x] Build annotation overlay system
+- [x] Design note creation and editing interface
+- [x] Implement note-to-highlight linking with metadata
 - [ ] Add tagging and categorization for notes
-- [ ] Create notes sidebar/panel
+- [x] Create notes sidebar/panel
 
 ### 3.2 Project Management
 - [ ] Design project creation workflow

@@ -39,8 +39,8 @@ const MainCanvas = ({ activeTab, onShowOmnibox, sidebarCollapsed, onTabUpdate, c
     }
   };
 
-  const handleWebViewCreateNote = async (text, noteContent, url, title) => {
-    console.log('handleWebViewCreateNote called:', { text, noteContent, url, title });
+  const handleWebViewCreateNote = async (text, noteContent, url, title, anchor, tags) => {
+    console.log('handleWebViewCreateNote called:', { text, noteContent, url, title, anchor, tags });
     if (activeTab && onTabUpdate && currentProject) {
       try {
         // Create bookmark for this page if it doesn't exist
@@ -61,8 +61,8 @@ const MainCanvas = ({ activeTab, onShowOmnibox, sidebarCollapsed, onTabUpdate, c
           noteContent,
           text, // highlight text
           '', // highlight position
-          '', // tags
-          '', // highlight selector
+          tags || '', // tags
+          JSON.stringify(anchor), // highlight anchor
           url, // url
           title || 'Untitled' // page title
         );
@@ -74,8 +74,8 @@ const MainCanvas = ({ activeTab, onShowOmnibox, sidebarCollapsed, onTabUpdate, c
     }
   };
 
-  const handleWebViewHighlight = async (text, url, title) => {
-    console.log('handleWebViewHighlight called:', { text, url, title });
+  const handleWebViewHighlight = async (text, url, title, anchor) => {
+    console.log('handleWebViewHighlight called:', { text, url, title, anchor });
     if (activeTab && onTabUpdate && currentProject) {
       try {
         // Create bookmark for this page if it doesn't exist
@@ -97,7 +97,7 @@ const MainCanvas = ({ activeTab, onShowOmnibox, sidebarCollapsed, onTabUpdate, c
           text, // highlight text
           '', // highlight position
           'highlight', // tags
-          '', // highlight selector
+          JSON.stringify(anchor), // highlight anchor
           url, // url
           title || 'Untitled' // page title
         );
@@ -118,6 +118,7 @@ const MainCanvas = ({ activeTab, onShowOmnibox, sidebarCollapsed, onTabUpdate, c
             url={activeTab.url}
             title={activeTab.title}
             tabId={activeTab.id}
+            currentProject={currentProject}
             onNavigate={handleWebViewNavigate}
             onTitleChange={handleWebViewTitleChange}
             onLoadingChange={handleWebViewLoadingChange}

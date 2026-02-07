@@ -3,6 +3,7 @@ import Sidebar from './Sidebar';
 import MainCanvas from './MainCanvas';
 import Omnibox from './Omnibox';
 import NotesPanel from './NotesPanel';
+import CitationPanel from './CitationPanel';
 import './App.css';
 
 const App = () => {
@@ -13,10 +14,18 @@ const App = () => {
   const [activeTab, setActiveTab] = useState(null);
   const [tabs, setTabs] = useState([]);
   const [showNotesPanel, setShowNotesPanel] = useState(false);
+  const [showCitationPanel, setShowCitationPanel] = useState(false);
 
   useEffect(() => {
     initializeApp();
   }, []);
+
+  // Expose current project ID globally for WebView access
+  useEffect(() => {
+    if (currentProject) {
+      window.currentProjectId = currentProject.id;
+    }
+  }, [currentProject]);
 
   const initializeApp = async () => {
     try {
@@ -28,17 +37,55 @@ const App = () => {
         setCurrentProject(projectList[0]);
       } else {
         // Create default project
-        const result = await window.electronAPI.database.createProject(
-          'My Research Project', 
-          'Default project for getting started with ScholarLens'
-        );
-        const newProjects = await window.electronAPI.database.getProjects();
-        setProjects(newProjects);
-        setCurrentProject(newProjects[0]);
+        await createProject('My Research Project', 'Default project for getting started with ScholarLens');
       }
     } catch (error) {
       console.error('Error initializing app:', error);
     }
+  };
+
+  const createProject = async (name, description) => {
+    try {
+      await window.electronAPI.database.createProject(name, description);
+      const projectList = await window.electronAPI.database.getProjects();
+      setProjects(projectList);
+      setCurrentProject(projectList[projectList.length - 1]);
+    } catch (error) {
+      console.error('Error creating project:', error);
+    }
+  };
+
+  const updateProject = async (id, name, description) => {
+    try {
+      await window.electronAPI.database.updateProject(id, name, description);
+      const projectList = await window.electronAPI.database.getProjects();
+      setProjects(projectList);
+      if (currentProject?.id === id) {
+        setCurrentProject(projectList.find(p => p.id === id));
+      }
+    } catch (error) {
+      console.error('Error updating project:', error);
+    }
+  };
+
+  const deleteProject = async (id) => {
+    try {
+      await window.electronAPI.database.deleteProject(id);
+      const projectList = await window.electronAPI.database.getProjects();
+      setProjects(projectList);
+      if (currentProject?.id === id) {
+        setCurrentProject(projectList[0] || null);
+      }
+    } catch (error) {
+      console.error('Error deleting project:', error);
+    }
+  };
+
+  const switchProject = (project) => {
+    setCurrentProject(project);
+    // Clear tabs when switching projects
+    setTabs([]);
+    setActiveTab(null);
   };
 
   const toggleSidebar = () => {
@@ -169,6 +216,11 @@ const App = () => {
           onTabClose={closeTab}
           onNewTab={createNewTab}
           onShowNotes={() => setShowNotesPanel(true)}
+          onShowCitations={() => setShowCitationPanel(true)}
+          onProjectSwitch={switchProject}
+          onProjectCreate={createProject}
+          onProjectUpdate={updateProject}
+          onProjectDelete={deleteProject}
         />
         
         <MainCanvas
@@ -192,6 +244,13 @@ const App = () => {
           isVisible={showNotesPanel}
           onClose={() => setShowNotesPanel(false)}
           onNavigateToUrl={handleNavigateToUrl}
+        />
+        
+        <CitationPanel
+          currentProject={currentProject}
+          activeTab={activeTab}
+          isVisible={showCitationPanel}
+          onClose={() => setShowCitationPanel(false)}
         />
       </div>
     </div>

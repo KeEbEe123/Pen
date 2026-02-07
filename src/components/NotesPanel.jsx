@@ -11,6 +11,8 @@ const NotesPanel = ({
   const [notes, setNotes] = useState([]);
   const [loading, setLoading] = useState(false);
   const [filter, setFilter] = useState('all'); // all, current-page, highlights
+  const [selectedTags, setSelectedTags] = useState([]);
+  const [allTags, setAllTags] = useState([]);
 
   useEffect(() => {
     if (isVisible && currentProject) {
@@ -38,6 +40,15 @@ const NotesPanel = ({
     try {
       const allNotes = await window.electronAPI.database.getNotes(currentProject.id);
       setNotes(allNotes);
+      
+      // Extract unique tags
+      const tags = new Set();
+      allNotes.forEach(note => {
+        if (note.tags) {
+          note.tags.split(',').forEach(tag => tags.add(tag.trim()));
+        }
+      });
+      setAllTags(Array.from(tags));
     } catch (error) {
       console.error('Error loading notes:', error);
     } finally {
@@ -46,14 +57,25 @@ const NotesPanel = ({
   };
 
   const filteredNotes = notes.filter(note => {
+    // Filter by page
     if (filter === 'current-page' && activeTab) {
       // Filter notes for current page (would need bookmark_id matching)
       return true; // Simplified for now
     }
     if (filter === 'highlights') {
-      return note.highlight_text && note.highlight_text.trim().length > 0;
+      if (!note.highlight_text || note.highlight_text.trim().length === 0) {
+        return false;
+      }
     }
-    return true; // 'all'
+    
+    // Filter by tags
+    if (selectedTags.length > 0) {
+      if (!note.tags) return false;
+      const noteTags = note.tags.split(',').map(t => t.trim());
+      return selectedTags.some(tag => noteTags.includes(tag));
+    }
+    
+    return true;
   });
 
   const formatDate = (dateString) => {
@@ -92,6 +114,25 @@ const NotesPanel = ({
         console.error('Error deleting note:', error);
       }
     }
+  };
+
+  const handleClearAll = async () => {
+    if (window.confirm('Are you sure you want to delete ALL notes and highlights? This cannot be undone.')) {
+      try {
+        await window.electronAPI.database.clearAllNotes(currentProject.id);
+        loadNotes();
+      } catch (error) {
+        console.error('Error clearing notes:', error);
+      }
+    }
+  };
+
+  const toggleTag = (tag) => {
+    setSelectedTags(prev => 
+      prev.includes(tag) 
+        ? prev.filter(t => t !== tag)
+        : [...prev, tag]
+    );
   };
 
   if (!isVisible) return null;
@@ -139,7 +180,35 @@ const NotesPanel = ({
         >
           Highlights
         </button>
+        <button 
+          className="filter-btn clear-btn"
+          onClick={handleClearAll}
+          title="Clear all notes and highlights"
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+            <polyline points="3,6 5,6 21,6"/>
+            <path d="M19,6v14a2,2 0 0,1-2,2H7a2,2 0 0,1-2-2V6m3,0V4a2,2 0 0,1,2-2h4a2,2 0 0,1,2,2v2"/>
+          </svg>
+          Clear All
+        </button>
       </div>
+
+      {allTags.length > 0 && (
+        <div className="notes-tags-filter">
+          <span className="tags-label">Filter by tags:</span>
+          <div className="tags-list">
+            {allTags.map(tag => (
+              <button
+                key={tag}
+                className={`tag-filter-btn ${selectedTags.includes(tag) ? 'active' : ''}`}
+                onClick={() => toggleTag(tag)}
+              >
+                {tag}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
 
       <div className="notes-content">
         {loading ? (

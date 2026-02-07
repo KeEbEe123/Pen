@@ -122,9 +122,9 @@ ipcMain.handle('db:get-bookmarks', async (event, projectId) => {
   }
 });
 
-ipcMain.handle('db:create-note', async (event, projectId, bookmarkId, content, highlightText, highlightPosition, tags) => {
+ipcMain.handle('db:create-note', async (event, projectId, bookmarkId, content, highlightText, highlightPosition, tags, highlightAnchor, url, pageTitle) => {
   try {
-    return database.createNote(projectId, bookmarkId, content, highlightText, highlightPosition, tags);
+    return database.createNote(projectId, bookmarkId, content, highlightText, highlightPosition, tags, highlightAnchor, url, pageTitle);
   } catch (error) {
     console.error('Error creating note:', error);
     throw error;
@@ -136,6 +136,61 @@ ipcMain.handle('db:get-notes', async (event, projectId, bookmarkId) => {
     return database.getNotes(projectId, bookmarkId);
   } catch (error) {
     console.error('Error getting notes:', error);
+    throw error;
+  }
+});
+
+ipcMain.handle('db:get-notes-by-url', async (event, projectId, url) => {
+  try {
+    return database.getNotesByUrl(projectId, url);
+  } catch (error) {
+    console.error('Error getting notes by URL:', error);
+    throw error;
+  }
+});
+
+ipcMain.handle('db:clear-all-notes', async (event, projectId) => {
+  try {
+    return database.clearAllNotes(projectId);
+  } catch (error) {
+    console.error('Error clearing all notes:', error);
+    throw error;
+  }
+});
+
+// Citation operations
+ipcMain.handle('db:create-citation', async (event, projectId, bookmarkId, citationText, format, metadata) => {
+  try {
+    return database.createCitation(projectId, bookmarkId, citationText, format, metadata);
+  } catch (error) {
+    console.error('Error creating citation:', error);
+    throw error;
+  }
+});
+
+ipcMain.handle('db:get-citations', async (event, projectId) => {
+  try {
+    return database.getCitations(projectId);
+  } catch (error) {
+    console.error('Error getting citations:', error);
+    throw error;
+  }
+});
+
+ipcMain.handle('db:update-citation', async (event, id, citationText, format, metadata) => {
+  try {
+    return database.updateCitation(id, citationText, format, metadata);
+  } catch (error) {
+    console.error('Error updating citation:', error);
+    throw error;
+  }
+});
+
+ipcMain.handle('db:delete-citation', async (event, id) => {
+  try {
+    return database.deleteCitation(id);
+  } catch (error) {
+    console.error('Error deleting citation:', error);
     throw error;
   }
 });

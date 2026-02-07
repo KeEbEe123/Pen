@@ -11,14 +11,41 @@ const AnnotationOverlay = ({
 }) => {
   const overlayRef = useRef(null);
   const [noteText, setNoteText] = useState('');
+  const [tags, setTags] = useState('');
   const [isCreatingNote, setIsCreatingNote] = useState(false);
 
   useEffect(() => {
     if (isVisible && overlayRef.current) {
-      // Position the overlay near the selection
+      // Position the overlay near the cursor/selection
       const overlay = overlayRef.current;
-      overlay.style.left = `${position.x}px`;
-      overlay.style.top = `${position.y}px`;
+      const rect = overlay.getBoundingClientRect();
+      
+      // Calculate position with boundary checks
+      let left = position.x;
+      let top = position.y;
+      
+      // Ensure overlay stays within viewport
+      const viewportWidth = window.innerWidth;
+      const viewportHeight = window.innerHeight;
+      
+      // Adjust horizontal position if it would overflow
+      if (left + rect.width > viewportWidth - 20) {
+        left = viewportWidth - rect.width - 20;
+      }
+      if (left < 20) {
+        left = 20;
+      }
+      
+      // Adjust vertical position if it would overflow
+      if (top + rect.height > viewportHeight - 20) {
+        top = position.y - rect.height - 20; // Position above instead
+      }
+      if (top < 20) {
+        top = 20;
+      }
+      
+      overlay.style.left = `${left}px`;
+      overlay.style.top = `${top}px`;
     }
   }, [isVisible, position]);
 
@@ -33,8 +60,9 @@ const AnnotationOverlay = ({
 
   const handleSaveNote = () => {
     if (noteText.trim()) {
-      onCreateNote(selectedText, noteText.trim());
+      onCreateNote(selectedText, noteText.trim(), tags.trim());
       setNoteText('');
+      setTags('');
       setIsCreatingNote(false);
       onClose();
     }
@@ -42,6 +70,7 @@ const AnnotationOverlay = ({
 
   const handleCancel = () => {
     setNoteText('');
+    setTags('');
     setIsCreatingNote(false);
     if (!isCreatingNote) {
       onClose();
@@ -113,6 +142,14 @@ const AnnotationOverlay = ({
               onChange={(e) => setNoteText(e.target.value)}
               autoFocus
               rows={4}
+            />
+            
+            <input
+              type="text"
+              className="tags-input"
+              placeholder="Tags (comma-separated, e.g. important, research, todo)"
+              value={tags}
+              onChange={(e) => setTags(e.target.value)}
             />
             
             <div className="note-actions">

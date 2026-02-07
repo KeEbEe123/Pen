@@ -42,6 +42,9 @@ class ScholarLensDB {
         updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
       )
     `);
+    
+    // Run migrations to add new columns if they don't exist
+    this.runMigrations();
 
     // Bookmarks/Pages table
     this.db.exec(`
@@ -67,7 +70,10 @@ class ScholarLensDB {
         content TEXT NOT NULL,
         highlight_text TEXT,
         highlight_position TEXT,
+        highlight_selector TEXT,
         tags TEXT,
+        url TEXT,
+        page_title TEXT,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (project_id) REFERENCES projects (id) ON DELETE CASCADE,
@@ -130,6 +136,43 @@ class ScholarLensDB {
       CREATE INDEX IF NOT EXISTS idx_history_url ON history(url);
       CREATE INDEX IF NOT EXISTS idx_history_time ON history(visit_time);
     `);
+  }
+
+  runMigrations() {
+    // Check if columns exist and add them if they don't
+    try {
+      // Check if highlight_selector column exists
+      const tableInfo = this.db.prepare("PRAGMA table_info(notes)").all();
+      const columnNames = tableInfo.map(col => col.name);
+      
+      if (!columnNames.includes('highlight_selector')) {
+        console.log('Adding highlight_selector column to notes table');
+        this.db.exec('ALTER TABLE notes ADD COLUMN highlight_selector TEXT');
+      }
+      
+      // New anchor-based column (preferred for robust restoration)
+      if (!columnNames.includes('highlight_anchor')) {
+        console.log('Adding highlight_anchor column to notes table');
+        this.db.exec('ALTER TABLE notes ADD COLUMN highlight_anchor TEXT');
+      }
+      
+      if (!columnNames.includes('url')) {
+        console.log('Adding url column to notes table');
+        this.db.exec('ALTER TABLE notes ADD COLUMN url TEXT');
+      }
+      
+      if (!columnNames.includes('page_title')) {
+        console.log('Adding page_title column to notes table');
+        this.db.exec('ALTER TABLE notes ADD COLUMN page_title TEXT');
+      }
+      
+      // Create index for faster URL lookups
+      this.db.exec('CREATE INDEX IF NOT EXISTS idx_notes_url ON notes(url)');
+      
+      console.log('Database migrations completed successfully');
+    } catch (error) {
+      console.error('Error running migrations:', error);
+    }
   }
 
   // Project methods
@@ -199,12 +242,12 @@ class ScholarLensDB {
   }
 
   // Note methods
-  createNote(projectId, bookmarkId, content, highlightText = '', highlightPosition = '', tags = '') {
+  createNote(projectId, bookmarkId, content, highlightText = '', highlightPosition = '', tags = '', highlightAnchor = '', url = '', pageTitle = '') {
     const stmt = this.db.prepare(`
-      INSERT INTO notes (project_id, bookmark_id, content, highlight_text, highlight_position, tags) 
-      VALUES (?, ?, ?, ?, ?, ?)
+      INSERT INTO notes (project_id, bookmark_id, content, highlight_text, highlight_position, tags, highlight_anchor, url, page_title) 
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
     `);
-    return stmt.run(projectId, bookmarkId, content, highlightText, highlightPosition, tags);
+    return stmt.run(projectId, bookmarkId, content, highlightText, highlightPosition, tags, highlightAnchor, url, pageTitle);
   }
 
   getNotes(projectId, bookmarkId = null) {
@@ -216,6 +259,11 @@ class ScholarLensDB {
       stmt = this.db.prepare('SELECT * FROM notes WHERE project_id = ? ORDER BY created_at DESC');
       return stmt.all(projectId);
     }
+  }
+
+  getNotesByUrl(projectId, url) {
+    const stmt = this.db.prepare('SELECT * FROM notes WHERE project_id = ? AND url = ? ORDER BY created_at DESC');
+    return stmt.all(projectId, url);
   }
 
   updateNote(id, content, tags) {
@@ -232,7 +280,38 @@ class ScholarLensDB {
     return stmt.run(id);
   }
 
-  // Settings methods
+  clearAllNotes(projectId) {
+    const stmt = this.db.prepare('DELETE FROM notes WHERE project_id = ?');
+    return stmt.run(projectId);
+  }
+
+  // Citation methods
+  createCitation(projectId, bookmarkId, citationText, format = 'APA', metadata = '') {
+    const stmt = this.db.prepare(`
+      INSERT INTO citations (project_id, bookmark_id, citation_text, format, metadata) 
+      VALUES (?, ?, ?, ?, ?)
+    `);
+    return stmt.run(projectId, bookmarkId, citationText, format, metadata);
+  }
+
+  getCitations(projectId) {
+    const stmt = this.db.prepare('SELECT * FROM citations WHERE project_id = ? ORDER BY created_at DESC');
+    return stmt.all(projectId);
+  }
+
+  updateCitation(id, citationText, format, metadata) {
+    const stmt = this.db.prepare(`
+      UPDATE citations 
+      SET citation_text = ?, format = ?, metadata = ? 
+      WHERE id = ?
+    `);
+    return stmt.run(citationText, format, metadata, id);
+  }
+
+  deleteCitation(id) {
+    const stmt = this.db.prepare('DELETE FROM citations WHERE id = ?');
+    return stmt.run(id);
+  }
   setSetting(key, value) {
     const stmt = this.db.prepare(`
       INSERT OR REPLACE INTO settings (key, value, updated_at) 

@@ -56,23 +56,23 @@
 - [x] Build annotation overlay system
 - [x] Design note creation and editing interface
 - [x] Implement note-to-highlight linking with metadata
-- [ ] Add tagging and categorization for notes
+- [x] Add tagging and categorization for notes
 - [x] Create notes sidebar/panel
 
 ### 3.2 Project Management
-- [ ] Design project creation workflow
-- [ ] Implement project-based organization
-- [ ] Create project dashboard/overview
-- [ ] Build project switching interface
-- [ ] Set up project-specific storage containers
+- [x] Design project creation workflow
+- [x] Implement project-based organization
+- [x] Create project dashboard/overview
+- [x] Build project switching interface
+- [x] Set up project-specific storage containers
 
 ### 3.3 Citation Management
-- [ ] Build citation detection system
-- [ ] Implement one-click citation generation
-- [ ] Support multiple formats (APA, MLA, Chicago, IEEE)
-- [ ] Create central reference panel
-- [ ] Design citation editing interface
-- [ ] Implement citation export functionality
+- [x] Build citation detection system
+- [x] Implement one-click citation generation
+- [x] Support multiple formats (APA, MLA, Chicago, IEEE)
+- [x] Create central reference panel
+- [x] Design citation editing interface
+- [x] Implement citation export functionality
 
 ## Phase 4: Advanced Research Tools
 

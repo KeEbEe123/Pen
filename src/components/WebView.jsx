@@ -186,6 +186,11 @@ const WebView = ({ url, title, tabId, currentProject, onNavigate, onTitleChange,
                 const highlight = new Highlight(range);
                 CSS.highlights.set(highlightId, highlight);
                 
+                // Add dynamic style for this highlight immediately
+                if (window.scholarLensAddHighlightStyle) {
+                  window.scholarLensAddHighlightStyle(highlightId);
+                }
+                
                 // Add animation using a single animation highlight
                 const animHighlight = new Highlight(range);
                 CSS.highlights.set('hl-anim', animHighlight);

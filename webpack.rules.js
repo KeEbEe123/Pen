@@ -26,6 +26,11 @@ module.exports = [
         presets: ['@babel/preset-react']
       }
     }
+  },
+  // SVG and image support
+  {
+    test: /\.(svg|png|jpg|jpeg|gif)$/,
+    type: 'asset/resource'
   }
   // Put your webpack loader rules in this array.  This is where you would put
   // your ts-loader configuration for instance:

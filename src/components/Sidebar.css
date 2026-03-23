@@ -223,7 +223,7 @@
 .tab-title {
   font-size: var(--font-size-sm);
   font-weight: 500;
-  color: var(--color-text-primary);
+  color: #1a1a1a;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -231,7 +231,7 @@
 
 .tab-url {
   font-size: var(--font-size-xs);
-  color: var(--color-text-tertiary);
+  color: #4a4a4a;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

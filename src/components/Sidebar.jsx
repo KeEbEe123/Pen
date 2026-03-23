@@ -67,7 +67,7 @@ const Sidebar = ({
         
         {!collapsed && (
           <div className="sidebar-title">
-            <h2>ScholarLens</h2>
+            <h2>INK</h2>
           </div>
         )}
       </div>

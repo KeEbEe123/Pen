@@ -28,101 +28,61 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--color-surface-elevated);
-  border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-sm);
-  border: 1px solid var(--color-border-light);
+  background: #1f1f1f;
+  border-radius: 80px;
   cursor: pointer;
   transition: all var(--transition-normal);
+  overflow: hidden;
 }
 
 .empty-canvas:hover {
-  box-shadow: var(--shadow-md);
   transform: scale(1.002);
 }
 
 .welcome-content {
   text-align: center;
-  max-width: 600px;
+  max-width: 800px;
   padding: var(--spacing-2xl);
+  position: relative;
 }
 
-.welcome-icon {
-  margin-bottom: var(--spacing-xl);
-  color: var(--color-accent);
+.ink-logo {
+  position: absolute;
+  top: -300px;
+  left: 38%;
+  transform: translateX(-50%);
+  scale: 0.5;
 }
 
-.welcome-content h2 {
+.inkblot-image {
+  width: 378px;
+  height: 378px;
+  object-fit: contain;
+}
+
+.ink-title {
+  margin: 0 0 var(--spacing-xl) 0;
+  font-size: 100px;
+  font-weight: 400;
+  font-style: italic;
+  color: white;
+  font-family: 'Apple Chancery', 'Brush Script MT', cursive;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.ink-subtitle {
   margin: 0 0 var(--spacing-md) 0;
-  font-size: var(--font-size-2xl);
-  font-weight: 600;
-  color: var(--color-text-primary);
+  font-size: 32px;
+  font-weight: 400;
+  color: white;
+  font-family: 'Homemade Apple', 'Bradley Hand', cursive;
+  line-height: 1.2;
 }
 
-.welcome-content > p {
-  margin: 0 0 var(--spacing-2xl) 0;
+.keyboard-shortcut {
+  margin: var(--spacing-lg) 0 0 0;
   font-size: var(--font-size-lg);
-  color: var(--color-text-secondary);
-}
-
-/* Quick Actions */
-.quick-actions {
-  margin-bottom: var(--spacing-2xl);
-}
-
-.keyboard-hint {
-  margin-top: var(--spacing-lg);
-  font-size: var(--font-size-sm);
-  color: var(--color-text-tertiary);
-}
-
-/* Features Preview */
-.features-preview {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: var(--spacing-xl);
-  margin-top: var(--spacing-2xl);
-  text-align: left;
-}
-
-@media (min-width: 768px) {
-  .features-preview {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-.feature {
-  display: flex;
-  align-items: flex-start;
-  gap: var(--spacing-md);
-  padding: var(--spacing-lg);
-  background: var(--color-surface-secondary);
-  border-radius: var(--radius-md);
-  transition: all var(--transition-normal);
-}
-
-.feature:hover {
-  background: var(--color-surface-tertiary);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-sm);
-}
-
-.feature svg {
-  color: var(--color-accent);
-  flex-shrink: 0;
-  margin-top: 2px;
-}
-
-.feature h4 {
-  margin: 0 0 var(--spacing-xs) 0;
-  font-size: var(--font-size-base);
-  font-weight: 500;
-  color: var(--color-text-primary);
-}
-
-.feature p {
-  margin: 0;
-  font-size: var(--font-size-sm);
-  color: var(--color-text-secondary);
-  line-height: 1.4;
+  color: rgba(255, 255, 255, 0.6);
+  font-family: var(--font-family);
 }

@@ -1,13 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './AnnotationOverlay.css';
 
-const AnnotationOverlay = ({ 
-  isVisible, 
-  position, 
-  selectedText, 
-  onCreateNote, 
-  onHighlight, 
-  onClose 
+const AnnotationOverlay = ({
+  isVisible,
+  position,
+  selectedText,
+  onCreateNote,
+  onHighlight,
+  onCite,
+  onClose
 }) => {
   const overlayRef = useRef(null);
   const [noteText, setNoteText] = useState('');
@@ -51,6 +52,11 @@ const AnnotationOverlay = ({
 
   const handleHighlight = () => {
     onHighlight(selectedText);
+    onClose();
+  };
+
+  const handleCite = () => {
+    onCite(selectedText);
     onClose();
   };
 
@@ -100,7 +106,7 @@ const AnnotationOverlay = ({
                 Highlight
               </button>
               
-              <button 
+              <button
                 className="action-btn note-btn"
                 onClick={handleCreateNote}
                 title="Create note"
@@ -113,8 +119,22 @@ const AnnotationOverlay = ({
                 </svg>
                 Note
               </button>
-              
-              <button 
+
+              <button
+                className="action-btn cite-btn"
+                onClick={handleCite}
+                title="Generate citation"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <path d="M6 17C4.89 17 4 16.1 4 15V9c0-1.1.89-2 2-2h4l2-3h0"/>
+                  <path d="M6 17h4l2-3"/>
+                  <path d="M14 17c-1.11 0-2-.9-2-2V9c0-1.1.89-2 2-2h4l2-3h0"/>
+                  <path d="M14 17h4l2-3"/>
+                </svg>
+                Cite
+              </button>
+
+              <button
                 className="action-btn close-btn"
                 onClick={handleCancel}
                 title="Close"

@@ -85,6 +85,16 @@
   background: var(--color-surface-tertiary);
 }
 
+.cite-btn {
+  background: var(--color-surface-secondary);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border);
+}
+
+.cite-btn:hover {
+  background: var(--color-surface-tertiary);
+}
+
 .close-btn {
   background: none;
   color: var(--color-text-tertiary);

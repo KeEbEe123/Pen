@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import WebView from './WebView';
+import { extractMetadata, generateCitation } from '../utils/citationGenerator';
 import './MainCanvas.css';
 import inkblotIcon from '../inkblot.svg';
 
@@ -110,6 +111,26 @@ const MainCanvas = ({ activeTab, onShowOmnibox, sidebarCollapsed, onTabUpdate, c
     }
   };
 
+  const handleWebViewCite = async (text, url, title) => {
+    if (!currentProject) return;
+    try {
+      const metadata = extractMetadata(url, title);
+      const citationText = generateCitation(metadata, 'APA');
+
+      await window.electronAPI.database.createCitation(
+        currentProject.id,
+        null,
+        citationText,
+        'APA',
+        JSON.stringify(metadata)
+      );
+
+      console.log('Citation created from selection:', citationText);
+    } catch (error) {
+      console.error('Error creating citation:', error);
+    }
+  };
+
   return (
     <div className="main-canvas">
       <div className={`canvas-container ${isSwitching ? 'switching' : 'active'}`}>
@@ -125,6 +146,7 @@ const MainCanvas = ({ activeTab, onShowOmnibox, sidebarCollapsed, onTabUpdate, c
             onLoadingChange={handleWebViewLoadingChange}
             onCreateNote={handleWebViewCreateNote}
             onHighlight={handleWebViewHighlight}
+            onCite={handleWebViewCite}
           />
         ) : (
           <div className="empty-canvas" onClick={handleCanvasClick}>

@@ -66,6 +66,8 @@
     --color-text-tertiary: #cbd5e0;
     --color-text-muted: #a0aec0;
     
+    --color-accent-light: rgba(102, 126, 234, 0.15);
+
     --color-border: #4a5568;
     --color-border-light: #2d3748;
   }

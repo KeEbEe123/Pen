@@ -58,12 +58,17 @@ const Omnibox = ({ onHide, onNavigate }) => {
   };
 
   const isURL = (text) => {
-    try {
-      new URL(text.startsWith('http') ? text : `https://${text}`);
-      return true;
-    } catch {
-      return text.includes('.') && !text.includes(' ');
+    // Already has a scheme — validate it parses
+    if (/^[a-zA-Z][a-zA-Z0-9+.-]*:\/\//.test(text)) {
+      try {
+        new URL(text);
+        return true;
+      } catch {
+        return false;
+      }
     }
+    // No scheme — must look like a domain (e.g. "example.com", "docs.google.com/path")
+    return /^[^\s]+\.[a-z]{2,}(\/\S*)?$/i.test(text);
   };
 
   const handleSubmit = (e) => {

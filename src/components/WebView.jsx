@@ -2,7 +2,7 @@ import React, { useRef, useEffect, useState } from 'react';
 import AnnotationOverlay from './AnnotationOverlay';
 import './WebView.css';
 
-const WebView = ({ url, title, tabId, currentProject, onNavigate, onTitleChange, onLoadingChange, onCreateNote, onHighlight }) => {
+const WebView = ({ url, title, tabId, currentProject, onNavigate, onTitleChange, onLoadingChange, onCreateNote, onHighlight, onCite }) => {
   const webviewRef = useRef(null);
   const [isLoading, setIsLoading] = useState(false);
   const [canGoBack, setCanGoBack] = useState(false);
@@ -718,6 +718,10 @@ const WebView = ({ url, title, tabId, currentProject, onNavigate, onTitleChange,
     }
   };
 
+  const handleCite = (text) => {
+    onCite?.(text, currentUrl, title);
+  };
+
   const handleCloseAnnotation = () => {
     setShowAnnotationOverlay(false);
   };
@@ -811,6 +815,7 @@ const WebView = ({ url, title, tabId, currentProject, onNavigate, onTitleChange,
         selectedText={selectedText}
         onCreateNote={handleCreateNote}
         onHighlight={handleHighlight}
+        onCite={handleCite}
         onClose={handleCloseAnnotation}
       />
     </div>
